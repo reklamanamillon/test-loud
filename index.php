@@ -1,1 +1,3 @@
-< php_check_syntax>
+<?php 
+
+?>
