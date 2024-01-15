@@ -1,1 +1,1 @@
-highlight_file
+< php_check_syntax>
