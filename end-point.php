@@ -26,4 +26,9 @@ fwrite($log, "Git pull output:\n$output\n\n");
 // Закрываем файл лога
 fclose($log);
 
+// Отправим ошибки в журнал ошибок PHP
+error_log("Received payload:\n$jsonPayload\n");
+error_log("Decoded JSON data:\n" . print_r($data, true) . "\n");
+error_log("Git pull output:\n$output\n");
+
 echo 'Webhook received successfully';
