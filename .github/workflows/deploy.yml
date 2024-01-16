@@ -1,0 +1,18 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Server
+        run: |
+          sshpass -p 'your_ssh_password' ssh user@your_server_ip "cd /var/www/html && git pull origin main"
