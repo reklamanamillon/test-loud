@@ -5,7 +5,7 @@ $jsonPayload = file_get_contents('php://input');
 $data = json_decode($jsonPayload, true);
 
 // Проверка наличия секретного токена (замените YOUR_SECRET_TOKEN)
-$secret = 'YOUR_SECRET_TOKEN';
+$secret = '123';
 if (!isset($_SERVER['HTTP_X_HUB_SIGNATURE'])) {
     die('Invalid signature');
 }
