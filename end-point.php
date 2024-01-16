@@ -4,18 +4,10 @@
 $logFile = '/var/www/html/webhook.log';
 $log = fopen($logFile, 'a');
 
-// Получаем данные из параметра data в GET запросе
-$jsonPayload = isset($_GET['data']) ? urldecode($_GET['data']) : '';
+// Получаем данные из тела POST-запроса
+$jsonPayload = file_get_contents('php://input');
 // Логируем данные (временно, для отладки)
 fwrite($log, "Received payload:\n$jsonPayload\n\n");
-
-// Проверяем, если данные приходят в JSON, логируем их разбор
-$data = json_decode($jsonPayload, true);
-if ($data !== null) {
-    fwrite($log, "Decoded JSON data:\n" . print_r($data, true) . "\n\n");
-} else {
-    fwrite($log, "Failed to decode JSON data.\n\n");
-}
 
 // Выполняем git pull (замените на свою команду)
 $output = shell_exec('git pull origin main 2>&1');
@@ -25,10 +17,5 @@ fwrite($log, "Git pull output:\n$output\n\n");
 
 // Закрываем файл лога
 fclose($log);
-
-// Отправим ошибки в журнал ошибок PHP
-error_log("Received payload:\n$jsonPayload\n");
-error_log("Decoded JSON data:\n" . print_r($data, true) . "\n");
-error_log("Git pull output:\n$output\n");
 
 echo 'Webhook received successfully';
