@@ -1,0 +1,21 @@
+name: SSH Connection Check
+
+on: [push]
+
+jobs:
+  check-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 158.160.137.62 >> ~/.ssh/known_hosts
+
+    - name: Test SSH connection
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'echo "SSH Connection Successful"'
