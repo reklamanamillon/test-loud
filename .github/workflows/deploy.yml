@@ -18,6 +18,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
           ssh-keyscan -t rsa 158.160.137.62 >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
@@ -26,3 +28,4 @@ jobs:
       
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
