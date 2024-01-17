@@ -20,10 +20,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      - name: Check SSH connection
-        run: ssh -T git@github.com
-
       - name: Deploy to Server
         run: |
-          ssh -T git@github.com
           ssh -T kornilov@158.160.137.62 "cd /var/www/html && git pull origin main"
