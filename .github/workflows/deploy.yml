@@ -1,4 +1,4 @@
-name: Deploy to Server
+name: Deploy to Ubuntu with Nginx
 
 on:
   push:
@@ -10,21 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Set up SSH connection
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Set up SSH key
+      - name: Check SSH connection
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-
-      - name: Debug SSH connection
-        run: ssh -v -i ~/.ssh/id_rsa kornilov@158.160.137.62 "echo Hello"
-
-      - name: Deploy to Server
-        run: |
-          ssh -i ~/.ssh/id_rsa kornilov@158.160.137.62 "cd /var/www/html && git pull origin main"
+          ssh -o StrictHostKeyChecking=no -p 22 kornilov@158.160.137.62 echo "SSH connection successful"
 
