@@ -1,18 +1,8 @@
-name: Deploy to Server
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Deploy to Server
         run: |
-          sshpass -p '  ' ssh kornilov@158.160.137.62 "cd /var/www/html && git pull origin main"
+          echo "$SSH_PRIVATE_KEY" > ssh_key
+          chmod 600 ssh_key
+          scp -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./test-script.php user@your_server_ip:/var/www/html/
+          ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@your_server_ip "cd /var/www/html && php test-script.php"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
