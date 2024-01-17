@@ -1,4 +1,4 @@
-name: SSH Deployment
+name: Deploy to Server
 
 on:
   push:
@@ -19,6 +19,12 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
-      - name: SSH Connection Test
-        run: ssh -o StrictHostKeyChecking=no -T kornilov@158.160.137.62 "echo 'SSH connection successful'"
+      - name: Debug SSH connection
+        run: ssh -v -i ~/.ssh/id_rsa kornilov@158.160.137.62 "echo Hello"
+
+      - name: Deploy to Server
+        run: |
+          ssh -i ~/.ssh/id_rsa kornilov@158.160.137.62 "cd /var/www/html && git pull origin main"
+
