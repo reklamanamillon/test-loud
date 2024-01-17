@@ -1,4 +1,4 @@
-name: Deploy to Server
+name: SSH Deployment
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.6.0  # Обновленная версия, поддерживающая Node16
+        uses: actions/checkout@v2
 
       - name: Set up SSH key
         run: |
@@ -20,6 +20,5 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      - name: Deploy to Server
-        run: |
-          ssh -T kornilov@158.160.137.62 "cd /var/www/html && git pull origin main"
+      - name: SSH Connection Test
+        run: ssh -o StrictHostKeyChecking=no -T kornilov@158.160.137.62 "echo 'SSH connection successful'"
