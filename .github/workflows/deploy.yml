@@ -22,10 +22,9 @@ jobs:
           ssh-keyscan -t rsa 158.160.137.62 >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-    - name:  Deploy to Ubuntu Server
-    run: | 
-    rsync -r --delete-after -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
-
+      - name: Deploy to Ubuntu Server
+        run: |
+          rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
 
       - name: SSH Connection Test
         run: |
