@@ -1,26 +1,20 @@
-name: Deploy to Ubuntu Server
+name: Deploy
 
 on:
   push:
     branches:
-      - main
+      - main  # или замените на вашу основную ветку
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Set up SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan 158.160.137.62 >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
 
     - name: Deploy to Ubuntu Server
       run: |
         rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
