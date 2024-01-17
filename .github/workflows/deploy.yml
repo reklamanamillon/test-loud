@@ -1,31 +1,22 @@
-
-name: Deploy to Ubuntu Server
+name: Deploy
 
 on:
   push:
     branches:
-      - main
+      - main  # или замените на вашу основную ветку
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa 158.160.137.62 >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-
-      - name: Deploy to Ubuntu Server
-        run: |
-          rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
-
-      - name: SSH Connection Test
-        run: |
-          ssh kornilov@158.160.137.62 "echo 'SSH connection successful!'"
+    - name: Deploy to Ubuntu Server
+      run: |
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
