@@ -15,8 +15,9 @@ jobs:
 
     - name: Deploy to Ubuntu Server
       run: |
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        mkdir -p ~/.ssh && echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
