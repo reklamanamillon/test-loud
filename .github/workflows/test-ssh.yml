@@ -1,18 +1,26 @@
-name: Test SSH Connection
+name: Deploy to Ubuntu Server
 
 on:
   push:
     branches:
-      - main # измените это на вашу основную ветку
+      - main
 
 jobs:
-  test-ssh:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Test SSH Connection
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} kornilov@158.160.137.62 exit
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan 158.160.137.62 >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
+
+    - name: Deploy to Ubuntu Server
+      run: |
+        rsync -r --delete-after $GITHUB_WORKSPACE/ kornilov@158.160.137.62:/var/www/html/
