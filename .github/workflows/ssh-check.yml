@@ -20,5 +20,6 @@ jobs:
     - name: Test SSH connection with verbose logging
       run: ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'echo "SSH Connection Successful"'
 
-    - name: Pull and rebase changes on server
-      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'cd /var/www/html && git pull --rebase origin main'
+   - name: Pull and rebase changes on server
+     run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'cd /var/www/html && git reset --hard && git pull --rebase origin main'
+
