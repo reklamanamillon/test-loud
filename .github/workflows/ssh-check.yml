@@ -1,9 +1,9 @@
-name: SSH Connection Check
+name: SSH Connection Check and Rebase
 
 on: [push]
 
 jobs:
-  check-ssh:
+  check-ssh-and-rebase:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,3 +19,6 @@ jobs:
 
     - name: Test SSH connection with verbose logging
       run: ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'echo "SSH Connection Successful"'
+
+    - name: Pull and rebase changes on server
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'cd /var/www/html && git pull --rebase origin main'
