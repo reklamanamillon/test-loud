@@ -3,23 +3,35 @@ name: SSH Connection Check and Rebase
 on: [push]
 
 jobs:
-  check-ssh-and-rebase:
+  check-ssh:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up SSH
+    - name: Set up SSH for Connection Check
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 158.160.137.62 >> ~/.ssh/known_hosts
 
-    - name: Test SSH connection with verbose logging
-      run: ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'echo "SSH Connection Successful"'
+    - name: Test SSH connection
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'echo "SSH Connection Successful"'
+
+  update-repo:
+    needs: check-ssh
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository for Update
+      uses: actions/checkout@v3
+
+    - name: Set up SSH for Repo Update
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 158.160.137.62 >> ~/.ssh/known_hosts
 
     - name: Pull and rebase changes on server
       run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kornilov@158.160.137.62 'cd /var/www/html && git reset --hard && git pull --rebase origin main'
-
